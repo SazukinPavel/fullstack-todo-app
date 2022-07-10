@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="postlist">
         <h1>Post List</h1>
-        <todo-card v-for="(todo) in todos" :key="todo._id" :title="todo.title" :description="todo.description"></todo-card>
+        <todo-card @updateTodo="updateTodo" @deleteTodo="deleteTodo" v-for="todo in todos" :key="todo._id" :todo="todo"></todo-card>
     </div>
 </template>
 <script>
@@ -11,11 +11,24 @@ export default {
     props: {
         todos: Array
     },
+    methods: {
+        deleteTodo(todo) {
+            this.$emit('deleteTodo',todo)
+        },
+        updateTodo(todo){
+            this.$emit('updateTodo',todo)
+        }
+    },
     components: {
-    TodoCard
-},
+        TodoCard
+    },
     name: 'todos-list'
 }
 </script>
 <style>
+.postlist h1 {
+    text-align: center;
+    color: teal;
+    font-size: 40px;
+}
 </style>
