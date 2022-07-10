@@ -4,12 +4,16 @@ import express from 'express';
 import { env } from 'process';
 import { config } from 'dotenv';
 import mongoose from 'mongoose';
+import cors from 'cors';
 
 config()
 
 
 const app: express.Express = express();
+
 app.use(express.json());
+app.use(cors());
+
 useExpressServer(app, {
   controllers: [TodosController]
 });
