@@ -1,13 +1,28 @@
-import { createExpressServer } from 'routing-controllers';
+import { useExpressServer } from 'routing-controllers';
 import { TodosController } from './controllers/TodosContoller';
-import { Express } from 'express';
+import express from 'express';
 import { env } from 'process';
 import { config } from 'dotenv';
+import mongoose from 'mongoose';
 
 config()
 
-const app:Express = createExpressServer({
-  controllers: [TodosController], 
+
+const app: express.Express = express();
+app.use(express.json());
+useExpressServer(app, {
+  controllers: [TodosController]
 });
 
-app.listen(env.PORT,()=>console.log(`SERVER START AT PORT ${env.PORT}`))
+
+main()
+
+async function main() {
+  try {
+    await mongoose.connect(env.CONNECTION_STRING);
+    app.listen(env.PORT, () => console.log(`SERVER START AT PORT ${env.PORT}`))
+  } catch (e) {
+    console.log(e);
+  }
+}
+

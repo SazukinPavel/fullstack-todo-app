@@ -8,4 +8,4 @@ export const TodoSchema=new Schema<ITodo>({
     id:Types.ObjectId
 })
 
-const Todo = model<ITodo>('User', TodoSchema);
+export const Todo = model<ITodo>('Todos', TodoSchema);
