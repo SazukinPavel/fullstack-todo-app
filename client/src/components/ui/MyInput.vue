@@ -17,9 +17,9 @@ export default {
 <style scoped>
     .input{
         color: teal;
-        width: 200px;
-        padding: 5px 10px;
+        padding: 5px 15px;
         font-size: 30px;
+        width: 100%;
         border: 2px teal solid;
     }
 </style>

@@ -37,15 +37,15 @@ export default {
 <style scoped>
 .form label {
     display: block;
-    width: 200px;
-    margin: 20px auto;
+    margin: 20px 0;
     font-size: 32px;
     color: teal;
 }
 
 .form {
-    width: 500px;
     margin: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .buttons {

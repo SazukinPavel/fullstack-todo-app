@@ -10,12 +10,21 @@ export default {
 </script>
 <style scoped>
     .button{
-        font-size: 30px;
+        font-size: 35px;
         color: teal;
         padding:10px 15px;
         margin: 5px;
-        border: 2px teal solid;
+        border: 3px teal solid;
         border-radius: 20%;
         background-color: aliceblue;
+        transition: all 0.3s;
+    }
+    .button:hover{
+        color: rgb(6, 79, 79);
+        border: 3px rgb(6, 79, 79) solid;
+    }
+      .button:focus{
+        color: rgb(6, 79, 79);
+        border: 3px rgb(6, 79, 79) solid;
     }
 </style>
