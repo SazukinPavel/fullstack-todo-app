@@ -8,7 +8,7 @@ export default {
     name:'my-button'
 }
 </script>
-<style scoped>
+<style>
     .button{
         font-size: 35px;
         color: teal;

@@ -29,7 +29,7 @@ export class TodosController {
     @Put(':id')
     async updateTodo(@Param('id') id:string,@Body() updateTodoDto:UpdateTodoDto){
         const todo=await Todo.findByIdAndUpdate(id,{...updateTodoDto})
-        return JSON.stringify(todo)
+        return JSON.stringify({...updateTodoDto,_id:id})
     }
 
     @Delete(':id')

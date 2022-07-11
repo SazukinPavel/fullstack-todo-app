@@ -10,13 +10,14 @@ export default {
 </script>
 <style>
 .root {
-    position: absolute;
+    position: relative;
     width: 100vw;
     height: 100vh;
     display: flex;
 }
 
 .root .spinner {
+    z-index: -100;
     width: 300px;
     height: 300px;
     margin: auto;
