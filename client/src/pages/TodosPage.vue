@@ -14,39 +14,34 @@
 import TodosList from '../components/TodosList.vue';
 import TodoForm from '../components/TodoForm.vue';
 import MyButton from '../components/ui/MyButton.vue';
-import TodoService from '@/services/TodoService';
+import { mapState } from 'vuex';
 export default {
   data() {
     return {
-      todos: [],
       showAddTodo: false,
       isPostLoading: false
     }
   },
+  computed: mapState([
+    'todos'
+  ]),
   methods: {
     async addTodo(todoDto) {
-      const todo = await TodoService.addTodo(todoDto)
-      this.todos.push(todo)
+        await this.$store.dispatch('addTodo',(todoDto))
       this.showAddTodo = false
     },
     async fetchTodos() {
       this.isPostLoading = true
       setTimeout(async () => {
-        this.todos = await TodoService.fetchTodos()
+        await this.$store.dispatch('fetchTodos')
         this.isPostLoading = false
       }, 1000);
     },
     deleteTodo(todo) {
-      this.todos = this.todos.filter((t) => t._id !== todo._id)
+      this.$store.dispatch('deleteTodo',(todo._id))
     },
     updateTodo(todo) {
-      this.todos = this.todos.map(t => {
-        if (t._id === todo._id) {
-          t.completed = !t.completed
-          return t
-        }
-        return t
-      })
+      this.$store.dispatch('updateTodo',(todo))
     },
     showAddTodoClick() {
       this.showAddTodo = true
