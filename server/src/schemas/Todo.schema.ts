@@ -5,7 +5,11 @@ export const TodoSchema=new Schema<ITodo>({
     title:{type:String,required:true},
     description:{type:String,required:true},
     completed:{type:Boolean,default:false},
-    id:Types.ObjectId
+    id:Types.ObjectId,
+    owner:{
+        type:Types.ObjectId,
+        ref:'Users'
+    }
 })
 
 export const Todo = model<ITodo>('Todos', TodoSchema);
