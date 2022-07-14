@@ -18,7 +18,6 @@ const app: express.Express = express();
 app.use(async (req, res, next) => {
   const cookie = req.cookies
   console.log(cookie);
-  
   if (cookie && 'auth' in cookie) {
     console.log('in');
     const token = cookie.auth
@@ -37,7 +36,7 @@ app.use(async (req, res, next) => {
 app.use('/todos', (req, res, next) => {
   console.log('work');
   if (!req.body.user) {
-    res.status(401).json('You not authorize')
+    res.status(403).json('You not authorize')
   }
   next()
 })

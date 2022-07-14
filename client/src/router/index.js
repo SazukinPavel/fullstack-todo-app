@@ -1,6 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import TodosPage from '../pages/TodosPage.vue'
 import TodoPage from '../pages/TodoPage.vue'
+import LoginPage from '../pages/LoginPage.vue'
+import RegisterPage from '../pages/RegisterPage.vue'
 
 const routes = [
   {
@@ -21,7 +23,22 @@ const routes = [
     props: true,
     component: TodoPage
   },
- 
+  {
+    path:'/login',
+    name: 'login-page',
+    component: LoginPage,
+    children:[
+      
+    ]
+  },
+  {
+    path:'/register',
+    name: 'register-page',
+    component: RegisterPage,
+    children:[
+      
+    ]
+  },
 ]
 
 const router = createRouter({

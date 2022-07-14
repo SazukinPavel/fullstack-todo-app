@@ -6,7 +6,7 @@ export const todosModule = {
     },
     getters: {
         todos(state){
-            return state.todos
+            return state.todos ?? []
         }
     },
     actions: {

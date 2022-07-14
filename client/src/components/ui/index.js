@@ -1,11 +1,17 @@
 import MyButton from '@/components/ui/MyButton'
-import MyInput from '@/components/ui/MyInput'
+import FormControl from '@/components/ui/FormControl'
 import MyModal from '@/components/ui/ModalWindow'
 import MyLoading from '@/components/ui/LoadingSpinner'
+import MyHeader from '@/components/ui/Header'
+import MyFooter from '@/components/ui/Footer'
+import MyTitle from '@/components/ui/Title'
 
 export default [
     MyButton,
-    MyInput,
     MyModal,
-    MyLoading
+    FormControl,
+    MyLoading,
+    MyHeader,
+    MyFooter,
+    MyTitle
 ]
