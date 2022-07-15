@@ -6,6 +6,6 @@ export class UserInfo{
     id:string
     constructor(user:IUser){
         this.username=user.username
-        this.id=user.id
+        this.id=user._id.toString()
     }
 }

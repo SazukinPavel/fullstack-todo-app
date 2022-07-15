@@ -1,10 +1,9 @@
-import { ObjectId } from "mongoose"
-import IUser from "./User"
+import {Types } from 'mongoose';
 
-export default interface ITodo{
-    id:string,
-    title:string,
-    description:string,
-    completed:boolean
-    owner:IUser | ObjectId
+export default interface IUser {
+  title: string
+  description: string
+  completed:boolean
+  _id:Types.ObjectId
+  owner:Types.ObjectId
 }

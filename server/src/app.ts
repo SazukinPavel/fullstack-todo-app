@@ -1,33 +1,35 @@
-import { useExpressServer } from 'routing-controllers';
-import { TodosController } from './controllers/todos.contoller';
+import { Action, useExpressServer } from 'routing-controllers';
 import express from 'express';
 import { env } from 'process';
 import { config } from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import { AuthController } from './controllers/auth.controller';
-import { checkAuthMiddleware } from './middlewares/checkAuth.middleware';
+import { authMiddleware,errorHandlerMiddleware } from './middlewares';
+import { AuthController,TodosController } from './controllers';
 
 config()
 
 const app: express.Express = express();
 
-
 app.use(express.json());
 app.use(cors({origin:env.CLIENT_URL,credentials:true}));
 app.use(cookieParser())
 
-app.use('/api/todos',checkAuthMiddleware)
-
+app.use('/api/',authMiddleware)
 
 useExpressServer(app, {
+  currentUserChecker: async (action: Action) => {
+    return action.request.user ?? undefined;
+  },
+  routePrefix:'/api/',
   controllers: [
     TodosController,
     AuthController
   ]
 });
 
+app.use(errorHandlerMiddleware)
 
 main()
 

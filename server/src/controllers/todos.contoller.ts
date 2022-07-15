@@ -1,40 +1,56 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Req} from 'routing-controllers';
+import { Body, Controller, CurrentUser, Delete, Get, HttpError, Param, Post, Put, Req} from 'routing-controllers';
 import 'reflect-metadata';
 import { Todo } from '../schemas/Todo.schema';
 import { AddTodoDto } from './dto/AddTodo.dto';
 import ITodo from '../models/Todo';
 import { UpdateTodoDto } from './dto/UpdateTodo.dto';
+import IUser from '../models/User';
 
-@Controller('/api/todos/')
+@Controller('todos/')
 export class TodosController {
     @Get()
-    async getAll() {
-        const todos:Array<ITodo>=await Todo.find<ITodo>()
+    async getUserTodos(@CurrentUser({required:true}) user:IUser) {
+        const todos:Array<ITodo>=await Todo.find<ITodo>({owner:user._id})
         return JSON.stringify(todos)
     }
 
     @Get(':id')
-    async getById(@Param('id') id:string){
-        const todo:ITodo=await Todo.findById(id).exec()
+    async getById(@CurrentUser({required:true}) user:IUser,@Param('id') id:string){
+        const todo:ITodo=await Todo.findById(id)
+        this.checkIsUserTodo(user,todo)
         return JSON.stringify(todo)
     }
 
     @Post()
-    async addTodo(@Body() addTodoDto:AddTodoDto){
-        const todo=new Todo({...addTodoDto})
+    async addTodoToUser(@CurrentUser({required:true}) user:IUser,@Body() addTodoDto:AddTodoDto){
+        console.log(user);
+        
+        const todo=new Todo({...addTodoDto,owner:user._id})
+        console.log(todo);
+        
         const savedTodo=await todo.save()
         return JSON.stringify(savedTodo)
     }
 
     @Put(':id')
-    async updateTodo(@Param('id') id:string,@Body() updateTodoDto:UpdateTodoDto){
-        const todo=await Todo.findByIdAndUpdate(id,{...updateTodoDto})
+    async updateTodo(@CurrentUser({required:true}) user:IUser,@Param('id') id:string,@Body() updateTodoDto:UpdateTodoDto){
+        const todo=await Todo.findById(id)
+        this.checkIsUserTodo(user,todo)
+        await Todo.findByIdAndUpdate(id,{...updateTodoDto})
         return JSON.stringify({...updateTodoDto,_id:id})
     }
 
     @Delete(':id')
-    async deleteTodo(@Param('id') id:string){
-        const deleteTodo=await Todo.findByIdAndDelete(id)
-        return JSON.stringify(deleteTodo)        
+    async deleteTodo(@CurrentUser({required:true}) user:IUser,@Param('id') id:string){
+        const todo=await Todo.findById(id)
+        this.checkIsUserTodo(user,todo)
+        await Todo.findByIdAndDelete(id)
+        return JSON.stringify(todo)        
+    }
+
+    private checkIsUserTodo(user:IUser,todo:ITodo){
+        if(user._id.toString()!=todo.owner.toString()){
+            throw new HttpError(404,' ')
+        }
     }
 }

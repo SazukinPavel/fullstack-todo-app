@@ -1,15 +1,15 @@
-import { model, Schema, Types } from "mongoose";
+import { model, Schema} from "mongoose";
 import ITodo from '../models/Todo'
+import { User } from "./User.schema";
 
 export const TodoSchema=new Schema<ITodo>({
     title:{type:String,required:true},
     description:{type:String,required:true},
     completed:{type:Boolean,default:false},
-    id:Types.ObjectId,
     owner:{
-        type:Types.ObjectId,
-        ref:'Users'
+        type:Schema.Types.ObjectId,
+        ref:'User'
     }
 })
 
-export const Todo = model<ITodo>('Todos', TodoSchema);
+export const Todo = model<ITodo>('Todo', TodoSchema);

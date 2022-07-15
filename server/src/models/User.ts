@@ -1,9 +1,7 @@
-import { ObjectId } from "mongoose"
-import ITodo from "./Todo"
+import {Types } from 'mongoose';
 
-export default interface IUser{
-    username:string
-    password:string
-    id:string,
-    todos:ITodo[] | ObjectId[]
+export default interface IUser {
+  password: string;
+  username: string;
+  _id:Types.ObjectId
 }
