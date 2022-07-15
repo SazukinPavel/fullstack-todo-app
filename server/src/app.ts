@@ -7,43 +7,19 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { AuthController } from './controllers/auth.controller';
-import { verify } from 'jsonwebtoken';
-import IUser from './models/User';
-import { User } from './schemas/User.schema';
+import { checkAuthMiddleware } from './middlewares/checkAuth.middleware';
 
 config()
 
 const app: express.Express = express();
 
-app.use(async (req, res, next) => {
-  const cookie = req.cookies
-  console.log(cookie);
-  if (cookie && 'auth' in cookie) {
-    console.log('in');
-    const token = cookie.auth
-    const user = verify(token, env.JWT_KEY) as IUser
-    if (!user) {
-      next()
-    }
-    const realUser = await User.findById(user.id)
-    if (realUser) {
-      req.body.user = user
-    }
-  }
-  next()
-})
-
-app.use('/todos', (req, res, next) => {
-  console.log('work');
-  if (!req.body.user) {
-    res.status(403).json('You not authorize')
-  }
-  next()
-})
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({origin:env.CLIENT_URL,credentials:true}));
 app.use(cookieParser())
+
+app.use('/api/todos',checkAuthMiddleware)
+
 
 useExpressServer(app, {
   controllers: [

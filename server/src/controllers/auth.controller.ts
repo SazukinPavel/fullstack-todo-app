@@ -1,26 +1,26 @@
-import { compare } from 'bcryptjs';
-import { Response } from 'express';
-import { sign } from 'jsonwebtoken';
+import { Request, Response } from 'express';
 import 'reflect-metadata';
-import { Body, Controller,HttpError,Post, Res } from 'routing-controllers';
+import { Body, Controller,Get,HttpError,Post, Req, Res } from 'routing-controllers';
 import IUser from '../models/User';
 import { User } from '../schemas/User.schema';
+import { UserInfo } from '../types/UserInfo';
+import { comparePassword, createLoginCookie, generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils';
 import { AuthDto } from './dto/Auth.dto';
-import { env } from 'process';
 
-@Controller('/auth/')
+@Controller('/api/auth/')
 export class AuthController {
     
     @Post('register')
-    async register(@Body() authDto:AuthDto,@Res() res:Response){
-        const userWithSameName=await User.findOne({username:authDto.username})
+    async register(@Body() {username,password}:AuthDto,@Res() res:Response){
+        const userWithSameName=await User.findOne({username})
         if(userWithSameName){
             return new HttpError(400,'User with same name alredy exists')
         }
-        const user=new User({...authDto})
+        const user=new User({password,username})
         await user.save()
-        res.cookie('auth',this.signToken(user))
-        return 'sucess'
+        const [acessToken,refreshToken]=[generateAccessToken(user._id.toString()),generateRefreshToken(user._id.toString())]
+        createLoginCookie(res,refreshToken)
+        return {user:new UserInfo(user),acessToken}
     }
 
     @Post('login')
@@ -29,15 +29,29 @@ export class AuthController {
         if(!user){
             return new HttpError(400,'No user with this username')
         }
-        const isPasswordEqual=await compare(password,user.password)
-        if(!isPasswordEqual){
+        if(await comparePassword(password,user)){
             return new HttpError(400,'Wrong password')
         }
-        res.cookie('auth',this.signToken(user))
-        return 'sucess'
+        const [acessToken,refreshToken]=[generateAccessToken(user._id.toString()),generateRefreshToken(user._id.toString())]
+        createLoginCookie(res,refreshToken)
+        return {user:new UserInfo(user),acessToken}
     }
 
-    private signToken(user:IUser){
-        return sign({id:user.id},parseInt(env.JWT_KEY).toString())
+    @Get('login/acess-token')
+    async getAcessToken(@Req() req:Request){
+        const rfToken = req.cookies.token
+		if (!rfToken) {
+			return new HttpError(400,'Please login in app!')
+		}
+		const result = verifyRefreshToken(rfToken) as IUser
+		if(!result) {
+            return new HttpError(400,'Wrong token, please relogin in app')
+		}
+		const user = await User.findById(result.id)
+		if (!user) {
+            return new HttpError(400,'User not found!')
+		}
+		const accessToken = generateAccessToken(user.id)
+		return{user:new UserInfo(user),accessToken,}
     }
 }

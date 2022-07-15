@@ -1,10 +1,10 @@
 import { model, Schema, Types } from "mongoose";
 import IUser from "../models/User";
-import {hash} from 'bcryptjs'
+import { hash} from 'bcryptjs'
 import { env } from "process";
 
 export const UserSchema=new Schema<IUser>({
-    username:{type:String,required:true},
+    username:{type:String,required:true,unique:true},
     password:{type:String,required:true},
     id:Types.ObjectId,
     todos:[{
@@ -12,6 +12,7 @@ export const UserSchema=new Schema<IUser>({
         ref:'Todos'
     }]
 })
+
 
 UserSchema.pre('save',async function(next){
     const user=this

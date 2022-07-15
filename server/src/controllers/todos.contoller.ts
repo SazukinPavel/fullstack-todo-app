@@ -5,7 +5,7 @@ import { AddTodoDto } from './dto/AddTodo.dto';
 import ITodo from '../models/Todo';
 import { UpdateTodoDto } from './dto/UpdateTodo.dto';
 
-@Controller('/todos/')
+@Controller('/api/todos/')
 export class TodosController {
     @Get()
     async getAll() {

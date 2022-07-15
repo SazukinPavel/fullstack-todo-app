@@ -1,4 +1,4 @@
-import TodoService from "@/services/TodoService";
+import TodoService from "@/services/TodoService"
 
 export const todosModule = {
     state: {

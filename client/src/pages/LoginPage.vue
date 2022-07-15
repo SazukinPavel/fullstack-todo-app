@@ -1,7 +1,7 @@
 <template>
   <div>
     <my-title>Login</my-title>
-    <form class="form">
+    <form @submit.prevent class="form">
       <form-control text="Username" v-model="authDto.username" />
       <form-control
         type="password"
@@ -10,12 +10,13 @@
       />
       <div class="buttons">
         <my-button @click="back">Back</my-button>
-        <my-button @click="registr">Registr</my-button>
+        <my-button @click="loginClick">Login</my-button>
       </div>
     </form>
   </div>
 </template>
 <script>
+import { mapActions } from 'vuex';
 export default {
   data() {
     return {
@@ -26,11 +27,14 @@ export default {
     };
   },
   methods:{
+    ...mapActions(['login']),
     back(){
       this.$router.back()
     },
-    registr(){
-      
+    async loginClick(){
+      if(this.authDto.username.length>=8 && this.authDto.password>=8){
+        await this.login(this.authDto)
+      }
     }
   },
   name: "login-page",

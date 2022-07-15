@@ -1,7 +1,7 @@
 <template>
   <div>
     <my-title>Registration</my-title>
-    <form class="form">
+    <form @submit.prevent class="form">
       <form-control text="Username" v-model="authDto.username" />
       <form-control
         type="password"
@@ -17,6 +17,7 @@
   </div>
 </template>
 <script>
+import { mapActions} from 'vuex';
 export default {
   data() {
     return {
@@ -28,12 +29,13 @@ export default {
     };
   },
   methods: {
+    ...mapActions(['register']),
     back() {
       this.$router.back();
     },
-    registr() {
-      if(this.repeatedPassword===this.authDto.password){
-        
+    async registr() {
+      if(this.authDto.username.length>=8 && this.authDto.password.length>=8 && this.repeatedPassword===this.authDto.password){
+        await this.register(this.authDto)
       }
     },
   },
