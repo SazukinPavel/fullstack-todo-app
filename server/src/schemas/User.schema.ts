@@ -1,10 +1,9 @@
-import { model, Schema, Types } from "mongoose";
+import { model, Schema} from "mongoose";
 import IUser from "../models/User";
 import { hash} from 'bcryptjs'
 import { env } from "process";
-import { Todo } from "./Todo.schema";
 
-export const UserSchema=new Schema<IUser>({
+const UserSchema=new Schema<IUser>({
     username:{type:String,required:true,unique:true},
     password:{type:String,required:true},
 })

@@ -1,44 +1,55 @@
-import { Action, useExpressServer } from 'routing-controllers';
-import express from 'express';
-import { env } from 'process';
-import { config } from 'dotenv';
-import mongoose from 'mongoose';
-import cors from 'cors';
+import cors from "cors";
+import express from "express";
+import { env } from "process";
 import cookieParser from 'cookie-parser';
-import { authMiddleware,errorHandlerMiddleware } from './middlewares';
-import { AuthController,TodosController } from './controllers';
+import { authMiddleware } from "./middlewares";
+import mongoose from "mongoose";
+import { Action, useExpressServer } from "routing-controllers";
+import { AuthController, TodosController } from "./controllers";
 
-config()
+export class App {
 
-const app: express.Express = express();
+    app: express.Express
 
-app.use(express.json());
-app.use(cors({origin:env.CLIENT_URL,credentials:true}));
-app.use(cookieParser())
+    constructor() {
+        this.app = express();
+    }
 
-app.use('/api/',authMiddleware)
+    configure() {
+        this.configureMiddleware()
+        this.configureRoutes()
+    }
 
-useExpressServer(app, {
-  currentUserChecker: async (action: Action) => {
-    return action.request.user ?? undefined;
-  },
-  routePrefix:'/api/',
-  controllers: [
-    TodosController,
-    AuthController
-  ]
-});
+    async start() {
+        try {
+            await this.connectDB()
+            this.app.listen(env.PORT, () => console.log(`SERVER START AT PORT ${env.PORT}`))
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
-app.use(errorHandlerMiddleware)
+    private configureMiddleware() {
+        this.app.use(express.json());
+        this.app.use(cors({ origin: env.CLIENT_URL, credentials: true }));
+        this.app.use(cookieParser())
+        this.app.use('/api/', authMiddleware)
+    }
 
-main()
+    private configureRoutes() {
+        useExpressServer(this.app, {
+            currentUserChecker: (action: Action) => {
+                return action.request.user ?? undefined;
+            },
+            routePrefix: '/api/',
+            controllers: [
+                TodosController,
+                AuthController
+            ]
+        });
+    }
 
-async function main() {
-  try {
-    await mongoose.connect(env.CONNECTION_STRING);
-    app.listen(env.PORT, () => console.log(`SERVER START AT PORT ${env.PORT}`))
-  } catch (e) {
-    console.log(e);
-  }
+    private async connectDB() {
+        await mongoose.connect(env.CONNECTION_STRING);
+    }
 }
-
