@@ -11,8 +11,15 @@ export default class AuthService {
 
     static async register(registerDto){
         try {
-            console.log(registerDto);
             return (await axios.post('/auth/register',registerDto)).data
+        } catch (e) {
+            console.log(`some error with fetch todo((( Error:${e}`);
+        }
+    }
+
+    static async getAuthorizeInfo(){
+        try {
+            return (await axios.get('auth/acess-token')).data
         } catch (e) {
             console.log(`some error with fetch todo((( Error:${e}`);
         }

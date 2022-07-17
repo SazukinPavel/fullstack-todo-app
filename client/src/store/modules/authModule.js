@@ -3,7 +3,8 @@ import AuthService from "@/services/AuthServce"
 export const authModule = {
     state: {
         isAuth: Boolean,
-        username:String
+        username:String,
+        accessToken:String
     },
     getters: {
         isAuth(state){
@@ -11,25 +12,32 @@ export const authModule = {
         },
         username(state){
             return state.username
+        },
+        accessToken(state){
+            return state.accessToken
         }
     },
     actions: {
-        // async tryAuth(ctx,action){
-            
-        // },
+        async tryAuth(ctx){
+            const authInfo=await AuthService.getAuthorizeInfo()
+            if(authInfo){
+                ctx.commit('authUser',authInfo)
+            }
+        },
         async register(ctx,authDto){
-            const user=await AuthService.register(authDto)
-            ctx.commit('authUser',user.username)
+            const authInfo=await AuthService.register(authDto)
+            ctx.commit('authUser',authInfo)
         },
         async login(ctx,authDto){
-            const user=await AuthService.login(authDto)
-            ctx.commit('authUser',user.username)
+            const authInfo=await AuthService.login(authDto)
+            ctx.commit('authUser',authInfo)
         },
     },
     mutations: {
-        authUser(state,username){
+        authUser(state,authInfo){
             state.isAuth=true
-            state.username=username
+            state.username=authInfo.user.username
+            state.accessToken=authInfo.accessToken
         },
     }
 }

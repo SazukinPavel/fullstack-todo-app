@@ -1,12 +1,14 @@
-import { Body, Controller, CurrentUser, Delete, Get, HttpError, JsonController, Param, Post, Put, Req } from 'routing-controllers';
+import { Body, Controller, CurrentUser, Delete, ForbiddenError, Get, Param, Post, Put, UseBefore } from 'routing-controllers';
 import 'reflect-metadata';
 import Todo from '../schemas/Todo.schema';
 import { AddTodoDto } from './dto/AddTodo.dto';
 import ITodo from '../models/Todo';
 import { UpdateTodoDto } from './dto/UpdateTodo.dto';
 import IUser from '../models/User';
+import { AuthMiddleware } from '../middlewares';
 
 @Controller('todos/')
+@UseBefore(AuthMiddleware)
 export class TodosController {
     @Get()
     async getUserTodos(@CurrentUser({ required: true }) user: IUser) {
@@ -16,14 +18,10 @@ export class TodosController {
 
     @Get(':id')
     async getById(@CurrentUser({ required: true }) user: IUser, @Param('id') id: string) {
-        try {
-            const todo: ITodo = await Todo.findById(id)
-            this.throwIfNotExist(todo)
-            this.checkIsUserTodo(user, todo)
-            return JSON.stringify(todo)
-        } catch (e) {
-            return e
-        }
+        const todo: ITodo = await Todo.findById(id)
+        this.throwIfNotExist(todo)
+        this.checkIsUserTodo(user, todo)
+        return JSON.stringify(todo)
     }
 
     @Post()
@@ -35,40 +33,31 @@ export class TodosController {
 
     @Put(':id')
     async updateTodo(@CurrentUser({ required: true }) user: IUser, @Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
-        try {
-            const todo = await Todo.findById(id)
-            this.throwIfNotExist(todo)
-            this.checkIsUserTodo(user, todo)
-            await Todo.findByIdAndUpdate(id, { ...updateTodoDto })
-            return JSON.stringify({ ...updateTodoDto, _id: id })
-        } catch (e) {
-            return e
-        }
+        const todo = await Todo.findById(id)
+        this.throwIfNotExist(todo)
+        this.checkIsUserTodo(user, todo)
+        await Todo.findByIdAndUpdate(id, { ...updateTodoDto })
+        return JSON.stringify({ ...updateTodoDto, _id: id })
     }
 
     @Delete(':id')
     async deleteTodo(@CurrentUser({ required: true }) user: IUser, @Param('id') id: string) {
-        try {
-            const todo = await Todo.findById(id)
-            this.throwIfNotExist(todo)
-            this.checkIsUserTodo(user, todo)
-            await Todo.findByIdAndDelete(id)
-            return JSON.stringify(todo)
-        } catch (e) {
-            return e
-        }
+        const todo = await Todo.findById(id)
+        this.throwIfNotExist(todo)
+        this.checkIsUserTodo(user, todo)
+        await Todo.findByIdAndDelete(id)
+        return JSON.stringify(todo)
     }
-
 
     private checkIsUserTodo(user: IUser, todo: ITodo) {
         if (user._id.toString() != todo.owner.toString()) {
-            throw new HttpError(404, 'Вы не владеете этой заметкой')
+            throw new ForbiddenError('Вы не владеете этой заметкой')
         }
     }
 
     private throwIfNotExist(todo: ITodo) {
         if (!todo) {
-            throw new HttpError(401, 'Такой задачи нет')
+            throw new ForbiddenError('Такой задачи нет')
         }
     }
 }

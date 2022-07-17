@@ -2,7 +2,6 @@ import cors from "cors";
 import express from "express";
 import { env } from "process";
 import cookieParser from 'cookie-parser';
-import { authMiddleware } from "./middlewares";
 import mongoose from "mongoose";
 import { Action, useExpressServer } from "routing-controllers";
 import { AuthController, TodosController } from "./controllers";
@@ -33,7 +32,6 @@ export class App {
         this.app.use(express.json());
         this.app.use(cors({ origin: env.CLIENT_URL, credentials: true }));
         this.app.use(cookieParser())
-        this.app.use('/api/', authMiddleware)
     }
 
     private configureRoutes() {

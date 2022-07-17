@@ -1,13 +1,15 @@
 import { Request, Response } from 'express';
 import 'reflect-metadata';
-import { Body, CurrentUser, Get, HttpCode, HttpError, JsonController, Post, Req, Res } from 'routing-controllers';
+import { BadRequestError, Body, Controller, CurrentUser, ForbiddenError, Get, HttpCode, Post, Req, Res, UseBefore} from 'routing-controllers';
+import { AuthMiddleware } from '../middlewares';
 import IUser from '../models/User';
 import { User } from '../schemas/User.schema';
+import { JwtUser } from '../types/JwtUser';
 import { UserInfo } from '../types/UserInfo';
 import { comparePassword, createLoginCookie, createLogoutCookie, generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils';
 import { AuthDto } from './dto/Auth.dto';
 
-@JsonController('auth/')
+@Controller('auth/')
 export class AuthController {
 
     @HttpCode(201)
@@ -15,7 +17,7 @@ export class AuthController {
     async register(@Body() { username, password }: AuthDto, @Res() res: Response) {
         const userWithSameName = await User.findOne({ username })
         if (userWithSameName) {
-            return new HttpError(400, 'Пользователь с таким именем уже существует')
+            throw new BadRequestError('Пользователь с таким именем уже существует')
         }
         const user = new User({ password, username })
         await user.save()
@@ -27,28 +29,28 @@ export class AuthController {
     async login(@Body() { username, password }: AuthDto, @Res() res: Response) {
         const user = await User.findOne({ username })
         if (!user) {
-            return new HttpError(400, 'Не существует пользователя с таким именем')
+            throw new BadRequestError('Не существует пользователя с таким именем')
         }
         if (!await comparePassword(password, user)) {
-            return new HttpError(400, 'Неправильный пароль')
+            throw new BadRequestError('Неправильный пароль')
         }
         return this.getAuthorizeResponse(user, res)
     }
 
     @HttpCode(200)
-    @Get('login/acess-token')
+    @Get('acess-token')
     async getAcessToken(@Req() req: Request) {
-        const rfToken = req.cookies.token
+        const rfToken = req.cookies?.token
         if (!rfToken) {
-            return new HttpError(403, 'Требуется авторизация')
+            throw new ForbiddenError('Требуется авторизация')
         }
-        const result = verifyRefreshToken(rfToken) as IUser
+        const result = verifyRefreshToken(rfToken) as JwtUser
         if (!result) {
-            return new HttpError(403, 'Неправильный токен, переавторизуйтесь')
+            throw new ForbiddenError('Неправильный токен, переавторизуйтесь')
         }
-        const user = await User.findById(result._id)
+        const user = await User.findById(result.id)
         if (!user) {
-            return new HttpError(403, 'Такого пользвателя нет')
+            throw new ForbiddenError('Такого пользвателя нет')
         }
         const accessToken = generateAccessToken(user.id)
         return { user: new UserInfo(user), accessToken, }
@@ -62,6 +64,7 @@ export class AuthController {
 
     @HttpCode(200)
     @Get('user')
+    @UseBefore(AuthMiddleware)
     getUser(@CurrentUser({ required: true }) user: IUser) {
         return user
     }
