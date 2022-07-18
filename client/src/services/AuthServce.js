@@ -5,7 +5,7 @@ export default class AuthService {
         try {
             return (await axios.post('/auth/login',loginDto)).data
         } catch (e) {
-            console.log(`some error with fetch todo((( Error:${e}`);
+            console.log(`some error with login((( Error:${e}`);
         }
     }
 
@@ -13,7 +13,7 @@ export default class AuthService {
         try {
             return (await axios.post('/auth/register',registerDto)).data
         } catch (e) {
-            console.log(`some error with fetch todo((( Error:${e}`);
+            console.log(`some error with register((( Error:${e}`);
         }
     }
 
@@ -21,7 +21,15 @@ export default class AuthService {
         try {
             return (await axios.get('auth/acess-token')).data
         } catch (e) {
-            console.log(`some error with fetch todo((( Error:${e}`);
+            console.log(`some error with authorize((( Error:${e}`);
+        }
+    }
+
+    static async logout(){
+        try {
+            return (await axios.get('auth/logout')).data
+        } catch (e) {
+            console.log(`some error with logout((( Error:${e}`);
         }
     }
 }

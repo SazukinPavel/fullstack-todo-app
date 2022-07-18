@@ -26,11 +26,20 @@ export const authModule = {
         },
         async register(ctx,authDto){
             const authInfo=await AuthService.register(authDto)
+            if(authInfo){
+                ctx.commit('authUser',authInfo)
+            }
             ctx.commit('authUser',authInfo)
         },
         async login(ctx,authDto){
             const authInfo=await AuthService.login(authDto)
-            ctx.commit('authUser',authInfo)
+            if(authInfo){
+                ctx.commit('authUser',authInfo)
+            }
+        },
+        async logout(ctx){
+            await AuthService.logout()
+            ctx.commit('logout')
         },
     },
     mutations: {
@@ -39,5 +48,10 @@ export const authModule = {
             state.username=authInfo.user.username
             state.accessToken=authInfo.accessToken
         },
+        logout(state){
+            state.accessToken=null
+            state.isAuth=false
+            state.username=null
+        }
     }
 }

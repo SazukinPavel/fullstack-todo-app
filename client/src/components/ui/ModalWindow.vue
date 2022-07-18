@@ -1,6 +1,6 @@
 <template>
     <div @click.stop="hideAddTodo" class="modal" v-if="show">
-        <div @click.stop class="modal_content">
+        <div @click.stop class="modal__content">
             <slot></slot>
         </div>
     </div>
@@ -32,7 +32,7 @@ export default {
     display: flex;
 }
 
-.modal_content{
+.modal__content{
     padding: 50px;
     min-width: 50px;
     min-height: 50px;

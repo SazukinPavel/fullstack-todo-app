@@ -13,9 +13,6 @@ const routes = [
     path:'/todos',
     name: 'todos-page',
     component: TodosPage,
-    children:[
-      
-    ]
   },
   {
     path: '/todos/:id',
@@ -27,17 +24,11 @@ const routes = [
     path:'/login',
     name: 'login-page',
     component: LoginPage,
-    children:[
-      
-    ]
   },
   {
     path:'/register',
     name: 'register-page',
     component: RegisterPage,
-    children:[
-      
-    ]
   },
 ]
 
