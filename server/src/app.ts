@@ -37,7 +37,7 @@ export class App {
     private configureRoutes() {
         useExpressServer(this.app, {
             currentUserChecker: (action: Action) => {
-                return action.request.user ?? undefined;
+                return action.request.user ?? undefined
             },
             routePrefix: '/api/',
             controllers: [
@@ -48,6 +48,6 @@ export class App {
     }
 
     private async connectDB() {
-        await mongoose.connect(env.CONNECTION_STRING);
+        await mongoose.connect(env.CONNECTION_STRING)
     }
 }

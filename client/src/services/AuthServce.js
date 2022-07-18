@@ -21,7 +21,7 @@ export default class AuthService {
         try {
             return (await axios.get('auth/acess-token')).data
         } catch (e) {
-            console.log(`some error with authorize((( Error:${e}`);
+            // console.log(`some error with authorize((( Error:${e}`);
         }
     }
 

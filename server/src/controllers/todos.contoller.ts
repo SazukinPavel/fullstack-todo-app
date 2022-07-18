@@ -1,4 +1,4 @@
-import { Body, Controller, CurrentUser, Delete, ForbiddenError, Get, Param, Post, Put, UseBefore } from 'routing-controllers';
+import { Body, Controller, CurrentUser, Delete, ForbiddenError, Get, JsonController, Param, Post, Put, UseBefore } from 'routing-controllers';
 import 'reflect-metadata';
 import Todo from '../schemas/Todo.schema';
 import { AddTodoDto } from './dto/AddTodo.dto';
@@ -7,13 +7,13 @@ import { UpdateTodoDto } from './dto/UpdateTodo.dto';
 import IUser from '../models/User';
 import { AuthMiddleware } from '../middlewares';
 
-@Controller('todos/')
+@JsonController('todos/')
 @UseBefore(AuthMiddleware)
 export class TodosController {
     @Get()
     async getUserTodos(@CurrentUser({ required: true }) user: IUser) {
         const todos: Array<ITodo> = await Todo.find<ITodo>({ owner: user._id })
-        return JSON.stringify(todos)
+        return todos
     }
 
     @Get(':id')
@@ -21,14 +21,14 @@ export class TodosController {
         const todo: ITodo = await Todo.findById(id)
         this.throwIfNotExist(todo)
         this.checkIsUserTodo(user, todo)
-        return JSON.stringify(todo)
+        return todo
     }
 
     @Post()
     async addTodoToUser(@CurrentUser({ required: true }) user: IUser, @Body() addTodoDto: AddTodoDto) {
         const todo = new Todo({ ...addTodoDto, owner: user._id })
         const savedTodo = await todo.save()
-        return JSON.stringify(savedTodo)
+        return savedTodo
     }
 
     @Put(':id')
@@ -37,7 +37,7 @@ export class TodosController {
         this.throwIfNotExist(todo)
         this.checkIsUserTodo(user, todo)
         await Todo.findByIdAndUpdate(id, { ...updateTodoDto })
-        return JSON.stringify({ ...updateTodoDto, _id: id })
+        return { ...updateTodoDto, _id: id }
     }
 
     @Delete(':id')
@@ -46,7 +46,7 @@ export class TodosController {
         this.throwIfNotExist(todo)
         this.checkIsUserTodo(user, todo)
         await Todo.findByIdAndDelete(id)
-        return JSON.stringify(todo)
+        return todo
     }
 
     private checkIsUserTodo(user: IUser, todo: ITodo) {

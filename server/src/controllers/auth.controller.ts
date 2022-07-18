@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import 'reflect-metadata';
-import { BadRequestError, Body, Controller, CurrentUser, ForbiddenError, Get, HttpCode, Post, Req, Res, UseBefore} from 'routing-controllers';
+import { BadRequestError, Body, Controller, CurrentUser, ForbiddenError, Get, HttpCode, JsonController, Post, Req, Res, UseBefore} from 'routing-controllers';
 import { AuthMiddleware } from '../middlewares';
 import IUser from '../models/User';
 import { User } from '../schemas/User.schema';
@@ -9,7 +9,7 @@ import { UserInfo } from '../types/UserInfo';
 import { comparePassword, createLoginCookie, createLogoutCookie, generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils';
 import { AuthDto } from './dto/Auth.dto';
 
-@Controller('auth/')
+@JsonController('auth/')
 export class AuthController {
 
     @HttpCode(201)
@@ -60,6 +60,7 @@ export class AuthController {
     @Get('logout')
     logout(@Res() res: Response) {
         createLogoutCookie(res)
+        return true
     }
 
     @HttpCode(200)
@@ -70,8 +71,8 @@ export class AuthController {
     }
 
     private getAuthorizeResponse(user: IUser, res: Response) {
-        const [acessToken, refreshToken] = [generateAccessToken(user._id.toString()), generateRefreshToken(user._id.toString())]
+        const [accessToken, refreshToken] = [generateAccessToken(user._id.toString()), generateRefreshToken(user._id.toString())]
         createLoginCookie(res, refreshToken)
-        return { user: new UserInfo(user), acessToken }
+        return { user: new UserInfo(user), accessToken }
     }
 }

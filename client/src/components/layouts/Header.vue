@@ -5,6 +5,7 @@
         </div>
         <div v-if="isAuth" class="header__content">
             <p class="header__username">{{ this.username}}</p>
+            <my-flat-button @click="toTodos">My todos</my-flat-button>
             <my-flat-button @click="logoutUser">Logout</my-flat-button>
         </div>
         <div v-else class="header__content">
@@ -24,7 +25,7 @@ export default {
         ...mapActions(['logout']),
         async logoutUser(){
             await this.logout()
-            this.$router.push({ path: `/` })
+            this.toHome()
         },
         toRegister(){
             this.$router.push({ path: `register`})
@@ -34,7 +35,9 @@ export default {
         },
         toHome(){
             this.$router.push({ path: `/` })
-
+        },
+        toTodos(){
+            this.$router.push({ path: `todos` })
         }
     },
     name: 'my-header'

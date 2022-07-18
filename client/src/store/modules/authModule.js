@@ -20,7 +20,6 @@ export const authModule = {
     actions: {
         async tryAuth(ctx){
             const authInfo=await AuthService.getAuthorizeInfo()
-            console.log(authInfo);
             if(authInfo){
                 ctx.commit('authUser',authInfo)
             }
@@ -30,7 +29,6 @@ export const authModule = {
             if(authInfo){
                 ctx.commit('authUser',authInfo)
             }
-            ctx.commit('authUser',authInfo)
         },
         async login(ctx,authDto){
             const authInfo=await AuthService.login(authDto)
@@ -45,7 +43,7 @@ export const authModule = {
     },
     mutations: {
         authUser(state,authInfo){
-            console.log(authInfo.user.username);
+            console.log(authInfo);
             console.log(authInfo.accessToken);
             state.isAuth=true
             state.username=authInfo.user.username

@@ -1,6 +1,16 @@
+import { store } from "@/store";
 import axios from "axios";
 
-export default axios.create({
+const myAxios= axios.create({
     baseURL:'http://localhost:4200/api',
     withCredentials:true
 })
+
+myAxios.interceptors.request.use((config)=>{
+    const token=store.getters.acessToken
+    console.log(token);
+        config.headers.Authorization =  token ?? ''
+    return config
+})
+
+export default myAxios
