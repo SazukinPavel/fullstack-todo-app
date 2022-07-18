@@ -1,10 +1,10 @@
 <template>
     <div class="header">
         <div class="logo">
-            <p>Fullstack Todo App</p>
+            <p @click="toHome">Fullstack Todo App</p>
         </div>
-        <div v-if="isAuth()" class="header__content">
-            <p class="header__username">{{ this.username() }}</p>
+        <div v-if="isAuth" class="header__content">
+            <p class="header__username">{{ this.username}}</p>
             <my-flat-button @click="logoutUser">Logout</my-flat-button>
         </div>
         <div v-else class="header__content">
@@ -22,15 +22,19 @@ export default {
     }),
     methods: {
         ...mapActions(['logout']),
-        logoutUser(){
-            this.logout()
+        async logoutUser(){
+            await this.logout()
             this.$router.push({ path: `/` })
         },
         toRegister(){
-            this.$router.push({ path: `/register`})
+            this.$router.push({ path: `register`})
         },
         toLogin(){
-            this.$router.push({ path: `/login` })
+            this.$router.push({ path: `login` })
+        },
+        toHome(){
+            this.$router.push({ path: `/` })
+
         }
     },
     name: 'my-header'

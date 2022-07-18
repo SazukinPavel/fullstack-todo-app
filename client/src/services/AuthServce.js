@@ -27,7 +27,8 @@ export default class AuthService {
 
     static async logout(){
         try {
-            return (await axios.get('auth/logout')).data
+            await axios.get('auth/logout')
+            return true
         } catch (e) {
             console.log(`some error with logout((( Error:${e}`);
         }

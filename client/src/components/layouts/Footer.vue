@@ -12,7 +12,7 @@ export default {
      .footer{
         min-height: 100px;
         background-color: teal;
-        position: absolute;
+        position: relative;
         bottom: 0;
         left: 0;
         width: 100%;

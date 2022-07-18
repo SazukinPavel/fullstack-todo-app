@@ -11,6 +11,7 @@ export default {
 <style>
 .flat-button {
     font-size: 35px;
+    border-radius: 7px;
     color: teal;
     color: aliceblue;
     transition: all 0.3s;
@@ -19,6 +20,7 @@ export default {
     -moz-user-select: none;
     -webkit-user-select: none;
     user-select: none;
+    padding: 5px;
 }
 
 .flat-button:hover {

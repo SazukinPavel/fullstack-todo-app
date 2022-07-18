@@ -11,6 +11,7 @@
       <form-control type="password" text="Repeat password" v-model="repeatedPassword" />
       <div class="buttons">
         <my-button @click="back">Back</my-button>
+        <my-button @click="toLogin">To login</my-button>
         <my-button @click="registr">Registr</my-button>
       </div>
     </form>
@@ -36,15 +37,20 @@ export default {
     async registr() {
       if(this.authDto.username.length>=8 && this.authDto.password.length>=8 && this.repeatedPassword===this.authDto.password){
         await this.register(this.authDto)
+        this.$router.push({path:'todos'});
       }
     },
+    toLogin(){
+      this.$router.push({path:'login'});
+    }
   },
   name: "register-page",
 };
 </script>
 <style scoped>
 .form {
-  width: 800px;
+  width: 720px;
   margin: auto;
+  padding: 20px;
 }
 </style>

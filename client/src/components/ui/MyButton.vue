@@ -15,8 +15,8 @@ export default {
         padding:10px 15px;
         margin: 5px;
         border: 3px teal solid;
-        border-radius: 20%;
         background-color: aliceblue;
+        border-radius: 7px;
         transition: all 0.3s;
     }
     .button:hover{

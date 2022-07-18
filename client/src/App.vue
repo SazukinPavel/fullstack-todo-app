@@ -1,7 +1,7 @@
 <template>
-  <LayoutVue>
-    <router-view></router-view>
-  </LayoutVue>
+    <LayoutVue>
+      <router-view></router-view>
+    </LayoutVue>
 </template>
 <script>
 import { mapActions } from 'vuex';
@@ -13,7 +13,7 @@ export default {
   mounted() {
     this.tryAuth()
   },
-  components:{
+  components: {
     LayoutVue
   }
 };
@@ -25,4 +25,5 @@ body {
   padding: 0;
   box-sizing: border-box;
 }
+
 </style>

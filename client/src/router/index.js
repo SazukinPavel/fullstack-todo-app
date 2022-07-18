@@ -3,11 +3,13 @@ import TodosPage from '../pages/TodosPage.vue'
 import TodoPage from '../pages/TodoPage.vue'
 import LoginPage from '../pages/LoginPage.vue'
 import RegisterPage from '../pages/RegisterPage.vue'
+import HomePage from '../pages/HomePage.vue'
 
 const routes = [
   {
     path:'/',
-    redirect:'/todos'
+    name: 'home-page',
+    component: HomePage,
   },
   {
     path:'/todos',

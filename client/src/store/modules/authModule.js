@@ -1,11 +1,11 @@
 import AuthService from "@/services/AuthServce"
 
 export const authModule = {
-    state: {
-        isAuth: Boolean,
-        username:String,
-        accessToken:String
-    },
+    state:()=>({
+        isAuth: false,
+        username:'',
+        accessToken:''
+    }),
     getters: {
         isAuth(state){
             return state.isAuth
@@ -20,6 +20,7 @@ export const authModule = {
     actions: {
         async tryAuth(ctx){
             const authInfo=await AuthService.getAuthorizeInfo()
+            console.log(authInfo);
             if(authInfo){
                 ctx.commit('authUser',authInfo)
             }
@@ -44,6 +45,8 @@ export const authModule = {
     },
     mutations: {
         authUser(state,authInfo){
+            console.log(authInfo.user.username);
+            console.log(authInfo.accessToken);
             state.isAuth=true
             state.username=authInfo.user.username
             state.accessToken=authInfo.accessToken

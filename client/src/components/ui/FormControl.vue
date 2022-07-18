@@ -1,8 +1,10 @@
 <template>
-  <label class="formControl">
-    {{ text }}:
+  <div class="form-control">
+    <label>
+      {{ text }}:
+    </label>
     <input :type="type" :value="modelValue" @change="updateInputValue" />
-  </label>
+  </div>
 </template>
 <script>
 export default {
@@ -10,9 +12,9 @@ export default {
   props: {
     modelValue: String,
     text: String,
-    type:{
-      type:String,
-      default:'text'
+    type: {
+      type: String,
+      default: 'text'
     }
   },
   methods: {
@@ -23,17 +25,22 @@ export default {
 };
 </script>
 <style>
-.formControl {
-  display: block;
+.form-control{
   margin: 20px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.form-control label {
   font-size: 32px;
   color: teal;
 }
-.formControl input {
+
+.form-control input {
   color: teal;
   padding: 5px 15px;
   font-size: 30px;
-  width: 100%;
+  margin: auto;
   border: 2px teal solid;
 }
 </style>
