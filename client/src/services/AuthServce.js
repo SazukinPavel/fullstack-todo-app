@@ -1,4 +1,5 @@
 import axios from "@/api/axios";
+import globalAxios from "axios";
 
 export default class AuthService {
     static async login(loginDto) {
@@ -19,7 +20,7 @@ export default class AuthService {
 
     static async getAuthorizeInfo(){
         try {
-            return (await axios.get('auth/acess-token')).data
+            return (await globalAxios.get(`http://localhost:4200/api/auth/acess-token`,{withCredentials:true})).data
         } catch (e) {
             // console.log(`some error with authorize((( Error:${e}`);
         }

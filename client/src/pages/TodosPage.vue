@@ -69,9 +69,8 @@ export default {
 .todos__buttons {
   display: flex;
   justify-content: space-between;
+  margin: 0 50px;
 }
-
-
 .todos {
   margin-top: 40px;
 }

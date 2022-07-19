@@ -6,5 +6,5 @@ export const generateRefreshToken=(id:string)=>{
 }
 
 export const generateAccessToken=(id:string)=>{
-    return sign({id},env.JWT_ACCESS_KEY,{expiresIn:'30m'})
+    return sign({id},env.JWT_ACCESS_KEY,{expiresIn:'1m'})
 }

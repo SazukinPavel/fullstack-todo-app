@@ -13,7 +13,7 @@ export class AuthMiddleware implements ExpressMiddlewareInterface {
 				const decoded = verifyAccessToken(accessToken) as JwtUser
 				request.user = await User.findById(decoded.id).select('-password')
 				next()
-			} catch { }
+			} catch{}
 		}
 		if (!request.user) {
 			response.status(403).json(new ForbiddenError('Вы не авторизованы'))
