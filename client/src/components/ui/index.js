@@ -4,6 +4,7 @@ import MyModal from '@/components/ui/ModalWindow'
 import MyLoading from '@/components/ui/LoadingSpinner'
 import MyTitle from '@/components/ui/Title'
 import MyFlatButton from '@/components/ui/MyFlatButton'
+import MySelect from '@/components/ui/MySelect'
 
 
 export default [
@@ -12,5 +13,6 @@ export default [
     FormControl,
     MyLoading,
     MyTitle,
-    MyFlatButton
+    MyFlatButton,
+    MySelect
 ]

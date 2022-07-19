@@ -29,9 +29,7 @@ export default {
       this.$router.back()
     },
     async loginClick() {
-      console.log(this.authDto);
       if (this.authDto.username.length >= 8 && this.authDto.password.length >= 8) {
-        console.log(this.authDto);
         await this.login(this.authDto)
         this.$router.push({path:'todos'});
       }

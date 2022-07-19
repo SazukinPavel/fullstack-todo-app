@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import 'reflect-metadata';
-import { BadRequestError, Body, Controller, CurrentUser, ForbiddenError, Get, HttpCode, JsonController, Post, Req, Res, UseBefore} from 'routing-controllers';
+import { BadRequestError, Body, CurrentUser, ForbiddenError, Get, HttpCode, JsonController, Post, Req, Res, UseBefore } from 'routing-controllers';
 import { AuthMiddleware } from '../middlewares';
 import IUser from '../models/User';
 import { User } from '../schemas/User.schema';

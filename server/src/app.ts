@@ -1,4 +1,3 @@
-import cors from "cors";
 import express from "express";
 import { env } from "process";
 import cookieParser from 'cookie-parser';
@@ -30,12 +29,12 @@ export class App {
 
     private configureMiddleware() {
         this.app.use(express.json());
-        this.app.use(cors({ origin: env.CLIENT_URL, credentials: true }));
         this.app.use(cookieParser())
     }
 
     private configureRoutes() {
         useExpressServer(this.app, {
+            cors: { origin: env.CLIENT_URL, credentials: true },
             currentUserChecker: (action: Action) => {
                 return action.request.user ?? undefined
             },

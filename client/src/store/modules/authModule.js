@@ -43,8 +43,6 @@ export const authModule = {
     },
     mutations: {
         authUser(state,authInfo){
-            console.log(authInfo);
-            console.log(authInfo.accessToken);
             state.isAuth=true
             state.username=authInfo.user.username
             state.accessToken=authInfo.accessToken

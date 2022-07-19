@@ -7,46 +7,46 @@ import { UpdateTodoDto } from './dto/UpdateTodo.dto';
 import IUser from '../models/User';
 import { AuthMiddleware } from '../middlewares';
 
-@JsonController('todos/')
+@Controller('todos/')
 @UseBefore(AuthMiddleware)
 export class TodosController {
     @Get()
-    async getUserTodos(@CurrentUser({ required: true }) user: IUser) {
-        const todos: Array<ITodo> = await Todo.find<ITodo>({ owner: user._id })
-        return todos
+    async getUserTodos(@CurrentUser() user: IUser) {
+        const todos= await Todo.find({ owner: user._id })
+        return JSON.stringify(todos)
     }
 
     @Get(':id')
-    async getById(@CurrentUser({ required: true }) user: IUser, @Param('id') id: string) {
+    async getById(@CurrentUser() user: IUser, @Param('id') id: string) {
         const todo: ITodo = await Todo.findById(id)
         this.throwIfNotExist(todo)
         this.checkIsUserTodo(user, todo)
-        return todo
+        return JSON.stringify(todo)
     }
 
     @Post()
-    async addTodoToUser(@CurrentUser({ required: true }) user: IUser, @Body() addTodoDto: AddTodoDto) {
+    async addTodoToUser(@CurrentUser() user: IUser, @Body() addTodoDto: AddTodoDto) {
         const todo = new Todo({ ...addTodoDto, owner: user._id })
         const savedTodo = await todo.save()
-        return savedTodo
+        return JSON.stringify(savedTodo)
     }
 
     @Put(':id')
-    async updateTodo(@CurrentUser({ required: true }) user: IUser, @Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
+    async updateTodo(@CurrentUser() user: IUser, @Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
         const todo = await Todo.findById(id)
         this.throwIfNotExist(todo)
         this.checkIsUserTodo(user, todo)
         await Todo.findByIdAndUpdate(id, { ...updateTodoDto })
-        return { ...updateTodoDto, _id: id }
+        return JSON.stringify({ ...updateTodoDto, _id: id })
     }
 
     @Delete(':id')
-    async deleteTodo(@CurrentUser({ required: true }) user: IUser, @Param('id') id: string) {
+    async deleteTodo(@CurrentUser() user: IUser, @Param('id') id: string) {
         const todo = await Todo.findById(id)
         this.throwIfNotExist(todo)
         this.checkIsUserTodo(user, todo)
         await Todo.findByIdAndDelete(id)
-        return todo
+        return JSON.stringify(todo)
     }
 
     private checkIsUserTodo(user: IUser, todo: ITodo) {
