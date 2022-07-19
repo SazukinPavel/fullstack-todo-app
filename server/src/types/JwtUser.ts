@@ -1,3 +1,3 @@
-export interface JwtUser{
+export default interface JwtUser{
     id:string
 }

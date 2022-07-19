@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { ExpressMiddlewareInterface, ForbiddenError } from 'routing-controllers';
-import { User } from '../schemas/User.schema';
-import { JwtUser } from '../types/JwtUser';
+import { User } from '../schemas';
+import { JwtUser } from '../types';
 import { verifyAccessToken } from '../utils';
 
 export class AuthMiddleware implements ExpressMiddlewareInterface {

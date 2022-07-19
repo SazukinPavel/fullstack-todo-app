@@ -1,7 +1,6 @@
 import IUser from "../models/User";
 
-1
-export class UserInfo{
+export default class UserInfo{
     username:string
     id:string
     constructor(user:IUser){

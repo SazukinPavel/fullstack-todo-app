@@ -2,10 +2,9 @@ import { Request, Response } from 'express';
 import 'reflect-metadata';
 import { BadRequestError, Body, CurrentUser, ForbiddenError, Get, HttpCode, JsonController, Post, Req, Res, UseBefore } from 'routing-controllers';
 import { AuthMiddleware } from '../middlewares';
-import IUser from '../models/User';
-import { User } from '../schemas/User.schema';
-import { JwtUser } from '../types/JwtUser';
-import { UserInfo } from '../types/UserInfo';
+import { IRefreshSession, IUser} from '../models';
+import { RefreshSession, User } from '../schemas';
+import { JwtRefreshSession, UserInfo } from '../types';
 import { comparePassword, createLoginCookie, createLogoutCookie, generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils';
 import { AuthDto } from './dto/Auth.dto';
 
@@ -44,13 +43,22 @@ export class AuthController {
         if (!rfToken) {
             throw new ForbiddenError('Требуется авторизация')
         }
-        const result = verifyRefreshToken(rfToken) as JwtUser
+        let result:JwtRefreshSession | undefined;
+        try{
+            result = verifyRefreshToken(rfToken) as JwtRefreshSession
+        }catch{
+            throw new ForbiddenError('Токен истёк, переавторизуйтесь')
+        }
         if (!result) {
             throw new ForbiddenError('Неправильный токен, переавторизуйтесь')
         }
-        const user = await User.findById(result.id)
+        const refreshSession:IRefreshSession=await RefreshSession.findById(result.id)
+        if(!refreshSession){
+            throw new ForbiddenError('Токен истёк, переавторизуйтесь')
+        }
+        const user = await User.findById(refreshSession.user)
         if (!user) {
-            throw new ForbiddenError('Такого пользвателя нет')
+            throw new ForbiddenError('Такого пользователя нет')
         }
         const accessToken = generateAccessToken(user.id)
         return { user: new UserInfo(user), accessToken, }
@@ -70,8 +78,8 @@ export class AuthController {
         return user
     }
 
-    private getAuthorizeResponse(user: IUser, res: Response) {
-        const [accessToken, refreshToken] = [generateAccessToken(user._id.toString()), generateRefreshToken(user._id.toString())]
+    private async getAuthorizeResponse(user: IUser, res: Response) {
+        const [accessToken, refreshToken] = [generateAccessToken(user._id.toString()),await generateRefreshToken(user)]
         createLoginCookie(res, refreshToken)
         return { user: new UserInfo(user), accessToken }
     }

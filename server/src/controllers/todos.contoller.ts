@@ -1,11 +1,10 @@
-import { Body, Controller, CurrentUser, Delete, ForbiddenError, Get, JsonController, Param, Post, Put, UseBefore } from 'routing-controllers';
+import { Body, Controller, CurrentUser, Delete, ForbiddenError, Get, Param, Post, Put, UseBefore } from 'routing-controllers';
 import 'reflect-metadata';
-import Todo from '../schemas/Todo.schema';
 import { AddTodoDto } from './dto/AddTodo.dto';
-import ITodo from '../models/Todo';
 import { UpdateTodoDto } from './dto/UpdateTodo.dto';
-import IUser from '../models/User';
 import { AuthMiddleware } from '../middlewares';
+import { Todo } from '../schemas';
+import { IUser,ITodo } from '../models';
 
 @Controller('todos/')
 @UseBefore(AuthMiddleware)
