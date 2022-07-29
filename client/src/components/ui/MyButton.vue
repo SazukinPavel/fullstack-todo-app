@@ -1,0 +1,30 @@
+<template>
+    <button class="button">
+        <slot></slot>
+    </button>
+</template>
+<script>
+export default {
+    name:'my-button'
+}
+</script>
+<style>
+    .button{
+        font-size: 35px;
+        color: teal;
+        padding:10px 15px;
+        margin: 5px;
+        border: 3px teal solid;
+        background-color: aliceblue;
+        border-radius: 7px;
+        transition: all 0.3s;
+    }
+    .button:hover{
+        color: rgb(6, 79, 79);
+        border: 3px rgb(6, 79, 79) solid;
+    }
+      .button:focus{
+        color: rgb(6, 79, 79);
+        border: 3px rgb(6, 79, 79) solid;
+    }
+</style>

@@ -1,0 +1,15 @@
+version: '3'
+services:
+    frontend:
+      build: ./client
+      ports:
+        - 3000:3000
+      container_name: todo-app-client
+      restart: always
+      links: [backend]
+    backend:
+      build: ./server
+      ports:
+        - 4200:4200
+      container_name: todo-app-server
+      restart: always

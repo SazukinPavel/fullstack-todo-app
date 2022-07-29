@@ -1,0 +1,62 @@
+import { Body, Controller, CurrentUser, Delete, ForbiddenError, Get, Param, Post, Put, UseBefore } from 'routing-controllers';
+import 'reflect-metadata';
+import { AddTodoDto } from './dto/AddTodo.dto';
+import { UpdateTodoDto } from './dto/UpdateTodo.dto';
+import { AuthMiddleware } from '../middlewares';
+import { Todo } from '../schemas';
+import { IUser,ITodo } from '../models';
+
+@Controller('todos/')
+@UseBefore(AuthMiddleware)
+export class TodosController {
+    @Get()
+    async getUserTodos(@CurrentUser() user: IUser) {
+        const todos= await Todo.find({ owner: user._id })
+        return JSON.stringify(todos)
+    }
+
+    @Get(':id')
+    async getById(@CurrentUser() user: IUser, @Param('id') id: string) {
+        const todo: ITodo = await Todo.findById(id)
+        this.throwIfNotExist(todo)
+        this.checkIsUserTodo(user, todo)
+        return JSON.stringify(todo)
+    }
+
+    @Post()
+    async addTodoToUser(@CurrentUser() user: IUser, @Body() addTodoDto: AddTodoDto) {
+        const todo = new Todo({ ...addTodoDto, owner: user._id })
+        const savedTodo = await todo.save()
+        return JSON.stringify(savedTodo)
+    }
+
+    @Put(':id')
+    async updateTodo(@CurrentUser() user: IUser, @Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
+        const todo = await Todo.findById(id)
+        this.throwIfNotExist(todo)
+        this.checkIsUserTodo(user, todo)
+        await Todo.findByIdAndUpdate(id, { ...updateTodoDto })
+        return JSON.stringify({ ...updateTodoDto, _id: id })
+    }
+
+    @Delete(':id')
+    async deleteTodo(@CurrentUser() user: IUser, @Param('id') id: string) {
+        const todo = await Todo.findById(id)
+        this.throwIfNotExist(todo)
+        this.checkIsUserTodo(user, todo)
+        await Todo.findByIdAndDelete(id)
+        return JSON.stringify(todo)
+    }
+
+    private checkIsUserTodo(user: IUser, todo: ITodo) {
+        if (user._id.toString() != todo.owner.toString()) {
+            throw new ForbiddenError('Вы не владеете этой заметкой')
+        }
+    }
+
+    private throwIfNotExist(todo: ITodo) {
+        if (!todo) {
+            throw new ForbiddenError('Такой задачи нет')
+        }
+    }
+}
